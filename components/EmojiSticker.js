@@ -12,4 +12,4 @@ const EmojiSticker = ({ imageSize, stickerSource }) => {
   )
 }
 
-export default EmojiSticker
+export default EmojiSticker;

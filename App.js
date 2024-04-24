@@ -55,6 +55,7 @@ const App = () => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <ImageViewer placeholderImageSource={placeholderImage} selectedImage={selectedImage}/>
+        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
       </View>
       
       {showAppOptions ? (
@@ -74,7 +75,6 @@ const App = () => {
       )}
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
         <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
-        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
       </EmojiPicker>
       <StatusBar style="auto" />
     </View>
