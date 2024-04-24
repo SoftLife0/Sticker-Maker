@@ -3,13 +3,16 @@ import { StyleSheet, Image, View } from 'react-native';
 import ImageViewer from './components/ImageViewer';
 import Button from './components/Button';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import CircleButton from './components/CircleButton';
 import IconButton from './components/IconButton';
 import EmojiPicker from './components/EmojiPicker';
 import EmojiList from './components/EmojjiList';
 import EmojiSticker from './components/EmojiSticker';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as MediaLibrary from 'expo-media-library';
+import { captureRef } from 'react-native-view-shot';
+
 
 
 const placeholderImage = require('./assets/images/background-image.png')
@@ -18,6 +21,9 @@ const App = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [showAppOptions, setShowAppOptions] = useState(false);
+
+  const [status, requestPermission] = MediaLibrary.usePermissions();
+  const imageRef = useRef();
 
   const onReset = () => {
     setShowAppOptions(false);
@@ -32,7 +38,19 @@ const App = () => {
   }
 
   const onSaveImageAsync = async () => {
-    // we will implement this later
+    try {
+      const localUri = await captureRef(imageRef, {
+        height: 440,
+        quality: 1,
+      });
+
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if (localUri) {
+        alert("Saved!");
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const [ isModalVisible, setIsModalVisible ] = useState(false);
@@ -53,10 +71,14 @@ const App = () => {
     }
   };
 
+  if (status === null) {
+    requestPermission();
+  } 
+
   return (
     <GestureHandlerRootView style={styles.container}>
 
-      <View style={styles.imageContainer}>
+      <View ref={imageRef} style={styles.imageContainer}>
         <ImageViewer placeholderImageSource={placeholderImage} selectedImage={selectedImage}/>
         {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
       </View>
