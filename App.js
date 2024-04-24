@@ -7,6 +7,8 @@ import { useState } from 'react';
 import CircleButton from './components/CircleButton';
 import IconButton from './components/IconButton';
 import EmojiPicker from './components/EmojiPicker';
+import EmojiList from './components/EmojjiList';
+import EmojiSticker from './components/EmojiSticker';
 
 const placeholderImage = require('./assets/images/background-image.png')
 
@@ -32,6 +34,8 @@ const App = () => {
   };
 
   const [ isModalVisible, setIsModalVisible ] = useState(false);
+  const [pickedEmoji, setPickedEmoji] = useState(null);
+
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -69,7 +73,8 @@ const App = () => {
         </View>
       )}
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
-
+        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
+        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
       </EmojiPicker>
       <StatusBar style="auto" />
     </View>
